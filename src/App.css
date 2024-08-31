@@ -27,6 +27,12 @@ input[type="text"] {
   border-radius: 4px;
   font-size: 16px;
 }
+input[type="date"] {
+  margin-top: 10px;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
 
 select {
   width: calc(100% - 24px);
@@ -35,6 +41,8 @@ select {
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 16px;
+  margin-top: 10px;
+   
 }
 
 button {
@@ -111,3 +119,4 @@ li button:hover {
   content: "⚠️ ";
   color: orange;
 }
+ 

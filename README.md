@@ -68,3 +68,12 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+
+APP FUNCTIONALITY 
+1. CREATE AND ADD TODO LIST --done
+2. DELETE WHEN FINISHED --done
+3. URGENCY LEVEL --done
+4. editable TODO LIST -- done
+5. auto SORT BY URGENCY LEVEL
+6. sort by creation date
