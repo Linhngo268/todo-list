@@ -13,7 +13,7 @@ body {
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  width: 500px;
+  width: 1000px;
   display: flex;
   flex-direction: column;
   align-items: center; /* Center align child elements */
@@ -46,28 +46,34 @@ select {
 }
 
 button {
-  width: 100%; /* Make the button fill the width */
+  width: 80%; /* Make the button fill the width */
   max-width: 150px; /* Optional: set a max width if you want to control the size */
   padding: 10px;
-  background-color: #28a745;
+  background-color: #000;
   color: #fff;
   border: none;
   border-radius: 4px;
   font-size: 16px;
   cursor: pointer;
+  flex-direction: column;
   margin-top: 10px; /* Add some space above the button */
   text-align: center; /* Center the text inside the button */
 }
 
 button:hover {
-  background-color: #218838;
+  background-color: #999;
+}
+.task-info{
+  margin-right: 10px;
+  padding-right: 50px;
+  max-width: fit-content;
 }
 .task-info span {
   flex-grow: 1;
   margin-left: 10px;
-  font-size: 18px; /* Increase the font size */
-  font-weight: bold; /* Make the text bold for emphasis */
-  color: #333; /* Set a color for the task name */
+  font-size: 18px; 
+  font-weight: bold; 
+  color: #333;  
 }
 
 ul {
@@ -78,7 +84,7 @@ ul {
 
 li {
   background-color: #f9f9f9;
-  padding: 10px;
+  padding: 100px;
   margin-bottom: 10px;
   border-radius: 4px;
   display: flex;

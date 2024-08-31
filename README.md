@@ -75,5 +75,5 @@ APP FUNCTIONALITY
 2. DELETE WHEN FINISHED --done
 3. URGENCY LEVEL --done
 4. editable TODO LIST -- done
-5. auto SORT BY URGENCY LEVEL
-6. sort by creation date
+5. auto SORT BY URGENCY LEVEL -- done -- still have some bugs
+6. Set due date -- done
