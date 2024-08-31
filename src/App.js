@@ -43,11 +43,9 @@ function App() {
           dueDate = null;
       }
       const newTodo = {
-       
+       id: Date.now(),
         text: inputValue,
         completed: false,
-         
-         
         urgency: urgency,
         dueDate:dueDate,
       };
@@ -59,17 +57,29 @@ function App() {
     }
   };
 
-  const toggleComplete = (index) => {
-    const newTodos = [...todos];
-    const todo = newTodos[index];
-    todo.completed = !todo.completed;
-    // todo.finishedDate = todo.completed ? new Date().toLocaleString() : null;
-    setTodos(newTodos);
+  // const toggleComplete = (id) => {
+  //   const newTodos = [...todos];
+  //   const todo = newTodos[id];
+  //   todo.completed = !todo.completed;
+  //   // todo.finishedDate = todo.completed ? new Date().toLocaleString() : null;
+  //   setTodos(newTodos);
      
+     
+  // };
+  const toggleComplete = (id) => {
+    const newTodos = todos.map((todo) => {
+      if (todo.id === id) {
+        return { ...todo, completed: !todo.completed };
+      }
+      return todo;
+    });
+  
+    setTodos(newTodos);
   };
+  
 
-  const deleteTodo = (index) => {
-    const newTodos = todos.filter((_, i) => i !== index);
+  const deleteTodo = (id) => {
+    const newTodos = todos.filter((_, i) => i !== id);
     setTodos(newTodos);
      
   };
@@ -92,6 +102,13 @@ function App() {
   };
 
   const sortedTodos = sortTodos(todos, sortOrder);
+   
+
+  // Function to check if the selected date is valid
+   
+   
+
+   
 
   return (
     <div className="container">
@@ -120,30 +137,45 @@ function App() {
           type="date"
           value={customDueDate}
           onChange={(e) => setCustomDueDate(e.target.value)}
+          
         />
+        
       )}
+        
       <button onClick={addTodo}>Add</button>
       <button onClick={handleSort}>
         Sort by Urgency ({sortOrder === "asc" ? "Most Urgent" : "Non-Urgent"})
       </button>
 
       <ul>
-        {sortedTodos.map((todo, index) => (
+        {/* {todos.map((todo, id) => (
           <ToDoItem
             todo={todo}
-            index={index}
+            id={id}
             toggleComplete={toggleComplete}
-            deleteTodo={deleteTodo}
+            deleteTodo={deleteTodo} 
             setTodos={setTodos}
             todos={todos}
           />
-        ))}
+        ))} */}
+
+{sortedTodos.map((todo) => (
+    <ToDoItem
+      key={todo.id} // Use the unique `id` as the key
+      todo={todo}
+       
+      toggleComplete={toggleComplete}
+      deleteTodo={deleteTodo}
+      setTodos={setTodos}
+      todos={todos}
+    />
+  ))}
       </ul>
     </div>
   );
 }
 
-const ToDoItem = ({ todo, index, toggleComplete, deleteTodo, setTodos, todos }) => {
+const ToDoItem = ({ todo, id, toggleComplete, deleteTodo, setTodos, todos }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editText, setEditText] = useState(todo.text);
 
@@ -153,7 +185,7 @@ const ToDoItem = ({ todo, index, toggleComplete, deleteTodo, setTodos, todos }) 
 
   const handleSave = () => {
     const newTodos = [...todos];
-    newTodos[index].text = editText;
+    newTodos[id].text = editText;
     setTodos(newTodos);
     setIsEditing(false);
     
@@ -169,7 +201,7 @@ const ToDoItem = ({ todo, index, toggleComplete, deleteTodo, setTodos, todos }) 
         <input
           type="checkbox"
           checked={todo.completed}
-          onChange={() => toggleComplete(index)}
+          onChange={() => toggleComplete(todo.id)}
         />
         {isEditing ? (
           <input
@@ -196,7 +228,7 @@ const ToDoItem = ({ todo, index, toggleComplete, deleteTodo, setTodos, todos }) 
       <div className="urgency-level">
         <strong>Urgency: </strong>{todo.urgency}
       </div>
-      <button onClick={() => deleteTodo(index)}>Delete</button>
+      <button onClick={() => deleteTodo(todo.id)}>Delete</button>
     </li>
   );
 };
