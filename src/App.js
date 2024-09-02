@@ -57,12 +57,7 @@ function App() {
     }
   };
 
-  // const toggleComplete = (id) => {
-  //   const newTodos = [...todos];
-  //   const todo = newTodos[id];
-  //   todo.completed = !todo.completed;
-  //   // todo.finishedDate = todo.completed ? new Date().toLocaleString() : null;
-  //   setTodos(newTodos);
+  
      
      
   // };
@@ -79,7 +74,7 @@ function App() {
   
 
   const deleteTodo = (id) => {
-    const newTodos = todos.filter((_, i) => i !== id);
+    const newTodos = todos.filter((todo) => todo.id !== id);
     setTodos(newTodos);
      
   };
@@ -148,16 +143,7 @@ function App() {
       </button>
 
       <ul>
-        {/* {todos.map((todo, id) => (
-          <ToDoItem
-            todo={todo}
-            id={id}
-            toggleComplete={toggleComplete}
-            deleteTodo={deleteTodo} 
-            setTodos={setTodos}
-            todos={todos}
-          />
-        ))} */}
+         
 
 {sortedTodos.map((todo) => (
     <ToDoItem
@@ -217,10 +203,7 @@ const ToDoItem = ({ todo, id, toggleComplete, deleteTodo, setTodos, todos }) => 
         )}
       </div>
       <div className="dates">
-        {/* <div className="created-date">Created: {todo.createdDate}</div>
-        {todo.finishedDate && (
-          <div className="finished-date">Finished: {todo.finishedDate}</div>
-        )} */}
+         
         {todo.dueDate && (
           <div className="due-date"><strong>Due: {todo.dueDate} </strong></div>
         )}
