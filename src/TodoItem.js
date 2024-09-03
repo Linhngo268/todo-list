@@ -1,19 +1,36 @@
 import React, { useState } from "react";
 
-const ToDoItem = ({ todo, index, toggleComplete, deleteTodo, setTodos, todos }) => {
+const TodoItem = ({ todo, toggleComplete, deleteTodo, setTodos }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editText, setEditText] = useState(todo.text);
 
-  const handleEdit = () => setIsEditing(true);
-
-  const handleSave = () => {
-    const newTodos = [...todos];
-    newTodos[index].text = editText;
-    setTodos(newTodos);
-    setIsEditing(false);
+  const handleEdit = () => {
+    setIsEditing(true);
   };
 
-  const handleBlur = () => handleSave();
+  const handleSave = () => {
+    const updatedTodo = { ...todo, text: editText };
+
+    fetch(`http://localhost:3000/todos/${todo.id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updatedTodo),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setIsEditing(false);
+        setTodos((prevTodos) =>
+          prevTodos.map((t) => (t.id === todo.id ? data : t))
+        );
+      })
+      .catch((error) => console.error('Error updating todo:', error));
+  };
+
+  const handleBlur = () => {
+    handleSave();
+  };
 
   return (
     <li className={todo.completed ? "completed" : ""}>
@@ -21,7 +38,7 @@ const ToDoItem = ({ todo, index, toggleComplete, deleteTodo, setTodos, todos }) 
         <input
           type="checkbox"
           checked={todo.completed}
-          onChange={() => toggleComplete(index)}
+          onChange={() => toggleComplete(todo.id)}
         />
         {isEditing ? (
           <input
@@ -44,12 +61,11 @@ const ToDoItem = ({ todo, index, toggleComplete, deleteTodo, setTodos, todos }) 
         )}
       </div>
       <div className="urgency-level">
-        <strong>Urgency: </strong>
-        {todo.urgency}
+        <strong>Urgency: </strong>{todo.urgency}
       </div>
-      <button onClick={() => deleteTodo(index)}>Delete</button>
+      <button onClick={() => deleteTodo(todo.id)}>Delete</button>
     </li>
   );
 };
 
-export default ToDoItem;
+export default TodoItem;
