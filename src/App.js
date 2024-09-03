@@ -1,31 +1,21 @@
 import React, { useState, useEffect } from "react";
- 
-
 import "./App.css";
-
+//check hoe to make id in the ""
 function App() {
   const [todos, setTodos] = useState([]);
   const [inputValue, setInputValue] = useState("");
   const [urgency, setUrgency] = useState("Non-Urgent");
-  const [sortOrder, setSortOrder] = useState("asc"); // state for sorting by urgency
-  const[dueDateOption,setDueDateOption]=useState("Today");
-  const [customDueDate, setCustomDueDate] = useState(""); //state for due date
+  const [sortOrder, setSortOrder] = useState("asc");
+  const [dueDateOption, setDueDateOption] = useState("Today");
+  const [customDueDate, setCustomDueDate] = useState("");
 
   useEffect(() => {
-    const savedTodos = JSON.parse(localStorage.getItem("todos"));
-    if (savedTodos) {
-      setTodos(savedTodos);
-    }
+    fetch("http://localhost:3000/todos")
+      .then((response) => response.json())
+      .then((data) => setTodos(data))
+      .catch((error) => console.error("Error fetching todos:", error));
   }, []);
 
-  useEffect(() => {
-    localStorage.setItem("todos", JSON.stringify(todos));
-  }, [todos]);
-  const urgencyLevels = {
-    "Most Urgent": 1,
-    "Urgent": 2,
-    "Non-Urgent": 3,
-  };
   const addTodo = () => {
     if (inputValue.trim()) {
       let dueDate;
@@ -42,49 +32,92 @@ function App() {
         default:
           dueDate = null;
       }
+      const generateId = () => {
+        const id =  Date.now(); // Generate a random ID (you can use any method here)
+        return `"${id}"`; // Wrap the ID in quotes
+      };
       const newTodo = {
-       id: Date.now(),
+        id: generateId(),
         text: inputValue,
         completed: false,
         urgency: urgency,
-        dueDate:dueDate,
+        dueDate: dueDate,
       };
-      setTodos([...todos, newTodo]);
+
+      fetch("http://localhost:3000/todos", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newTodo),
+      })
+        .then((response) => response.json())
+        .then((data) => setTodos([...todos, data]));
+
       setInputValue("");
-      setUrgency("Non-Urgent"); // Reset urgency to default
+      setUrgency("Non-Urgent");
       setDueDateOption("Today");
       setCustomDueDate("");
     }
   };
 
+const toggleComplete = (id) => {
+    const updatedTodo = todos.find((todo) => todo.id === id);
   
-     
-     
-  // };
-  const toggleComplete = (id) => {
-    const newTodos = todos.map((todo) => {
-      if (todo.id === id) {
-        return { ...todo, completed: !todo.completed };
-      }
-      return todo;
-    });
+    if (updatedTodo) {
+      const updatedTodoData = { ...updatedTodo, completed: !updatedTodo.completed };
   
-    setTodos(newTodos);
+      // Update the state locally
+      const newTodos = todos.map((todo) => 
+        todo.id === id ? updatedTodoData : todo
+      );
+      setTodos(newTodos);
+  
+      // Make a PUT request to update the todo item on the server
+      fetch(`http://localhost:3000/todos/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedTodoData),
+      })
+        .then(response => response.json())
+        .then(data => {
+          console.log('Success:', data);
+          console.log(id); 
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+          console.log(id); 
+        });
+    }
   };
   
+  
+    
 
   const deleteTodo = (id) => {
-    const newTodos = todos.filter((todo) => todo.id !== id);
-    setTodos(newTodos);
-     
-  };
-
+  fetch(`http://localhost:3000/todos/${id}`, {
+    method: "DELETE",
+  })
+    .then(() => {
+      setTodos((prevTodos) => prevTodos.filter((todo) => todo.id !== id));
+    })
+    .catch((error) => console.error('Error deleting todo:', error));
+};
   const handleKeyPress = (e) => {
     if (e.key === "Enter") {
       addTodo();
     }
   };
+
   const sortTodos = (todos, order) => {
+    const urgencyLevels = {
+      "Most Urgent": 1,
+      "Urgent": 2,
+      "Non-Urgent": 3,
+    };
+
     return [...todos].sort((a, b) => {
       return order === "asc"
         ? urgencyLevels[a.urgency] - urgencyLevels[b.urgency]
@@ -97,13 +130,6 @@ function App() {
   };
 
   const sortedTodos = sortTodos(todos, sortOrder);
-   
-
-  // Function to check if the selected date is valid
-   
-   
-
-   
 
   return (
     <div className="container">
@@ -132,55 +158,65 @@ function App() {
           type="date"
           value={customDueDate}
           onChange={(e) => setCustomDueDate(e.target.value)}
-          
         />
-        
       )}
-        
+
       <button onClick={addTodo}>Add</button>
       <button onClick={handleSort}>
         Sort by Urgency ({sortOrder === "asc" ? "Most Urgent" : "Non-Urgent"})
       </button>
 
       <ul>
-         
-
-{sortedTodos.map((todo) => (
-    <ToDoItem
-      key={todo.id} // Use the unique `id` as the key
-      todo={todo}
-       
-      toggleComplete={toggleComplete}
-      deleteTodo={deleteTodo}
-      setTodos={setTodos}
-      todos={todos}
-    />
-  ))}
+        {sortedTodos.map((todo) => (
+          <ToDoItem
+            key={todo.id}
+            todo={todo}
+            toggleComplete={toggleComplete}
+            deleteTodo={deleteTodo}
+            setTodos={setTodos}
+          />
+        ))}
       </ul>
     </div>
   );
 }
 
-const ToDoItem = ({ todo, id, toggleComplete, deleteTodo, setTodos, todos }) => {
+const ToDoItem = ({ todo, toggleComplete, deleteTodo,setTodos }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editText, setEditText] = useState(todo.text);
+ 
 
   const handleEdit = () => {
     setIsEditing(true);
   };
 
-  const handleSave = () => {
-    const newTodos = [...todos];
-    newTodos[id].text = editText;
-    setTodos(newTodos);
-    setIsEditing(false);
-    
-  };
+ 
+  
+    const handleSave = () => {
+      const updatedTodo = { ...todo, text: editText };
+  
+      fetch(`http://localhost:3000/todos/${todo.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedTodo),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          setIsEditing(false);
+          setTodos((prevTodos) =>
+            prevTodos.map((t) => (t.id === todo.id ? data : t))
+          );
+        })
+        .catch((error) => console.error('Error updating todo:', error));
+    };
+  
 
   const handleBlur = () => {
     handleSave();
   };
-  
+
   return (
     <li className={todo.completed ? "completed" : ""}>
       <div className="task-info">
@@ -203,9 +239,10 @@ const ToDoItem = ({ todo, id, toggleComplete, deleteTodo, setTodos, todos }) => 
         )}
       </div>
       <div className="dates">
-         
         {todo.dueDate && (
-          <div className="due-date"><strong>Due: {todo.dueDate} </strong></div>
+          <div className="due-date">
+            <strong>Due: {todo.dueDate} </strong>
+          </div>
         )}
       </div>
       <div className="urgency-level">
