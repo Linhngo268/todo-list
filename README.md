@@ -77,3 +77,10 @@ APP FUNCTIONALITY
 4. editable TODO LIST -- done
 5. auto SORT BY URGENCY LEVEL -- done -- still have some bugs
 6. Set due date -- done
+
+
+
+1. install npm: npm install
+ 2. start the server: npm run server
+ 3. npm run start
+ 

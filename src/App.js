@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
+
 import "./App.css";
 import TodoItem from "./TodoItem";
 import { useInputTodo } from "./inputTodo";
 import { toggleComplete } from "./toggleComplete";
 import { deleteTodo } from "./deleteTodo";
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/>
 function App() {
   const [todos, setTodos] = useState([]);
   const {
