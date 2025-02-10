@@ -24,10 +24,16 @@ function App() {
 
   useEffect(() => {
     fetch("http://localhost:3000/todos")
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
       .then((data) => setTodos(data))
       .catch((error) => console.error("Error fetching todos:", error));
   }, []);
+  
 
   const handleKeyPress = (e) => {
     if (e.key === "Enter") {

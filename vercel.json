@@ -1,0 +1,12 @@
+{
+    "build": {
+      "env": {
+        "NODE_ENV": "production"
+      }
+    },
+    "scripts": {
+      "build": "npm install",
+      "start": "npm run server && npm run start"
+    }
+  }
+  

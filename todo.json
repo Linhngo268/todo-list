@@ -1,18 +1,3 @@
 {
-  "todos": [
-    {
-      "id": "\"1725347257518\"",
-      "text": "d",
-      "completed": false,
-      "urgency": "Non-Urgent",
-      "dueDate": "03/09/2024"
-    },
-    {
-      "id": "\"1725347713044\"",
-      "text": "sf",
-      "completed": false,
-      "urgency": "Non-Urgent",
-      "dueDate": "03/09/2024"
-    }
-  ]
+  "todos": []
 }
